@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQ Route - Emergency Vehicle Route Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #172554;
+        }
+
+        header {
+            background: #0f172a;
+            color: white;
+            padding: 25px 7%;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #cbd5e1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2563eb;
+        }
+
+        .intro h2 {
+            margin-bottom: 8px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        .stat-card h3 {
+            font-size: 27px;
+            color: #2563eb;
+            margin-bottom: 7px;
+        }
+
+        .stat-card p {
+            color: #64748b;
+        }
+
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        .panel h2 {
+            margin-bottom: 18px;
+            color: #0f172a;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: white;
+        }
+
+        button {
+            padding: 12px 17px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px 5px 5px 0;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary {
+            background: #475569;
+        }
+
+        .danger {
+            background: #dc2626;
+        }
+
+        .success {
+            background: #15803d;
+        }
+
+        .map {
+            position: relative;
+            width: 100%;
+            min-height: 390px;
+            background: #e0f2fe;
+            border: 2px solid #bfdbfe;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .result-card {
+            background: #eff6ff;
+            padding: 18px;
+            border-radius: 9px;
+        }
+
+        .result-card h3 {
+            color: #1d4ed8;
+            margin-bottom: 8px;
+        }
+
+        .result-card p {
+            margin-top: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            padding: 12px;
+            margin-top: 12px;
+            background: #eff6ff;
+            border-radius: 7px;
+            color: #1e40af;
+        }
+
+        .hospital-item {
+            padding: 13px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hospital-item p {
+            margin-top: 6px;
+            color: #64748b;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        footer {
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 23px;
+            }
+
+            .panel {
+                padding: 15px;
+            }
+
+            .map {
+                min-height: 320px;
+            }
+        }
+    </style>
+
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+<header>
+    <h1>🚑 ResQ Route</h1>
+    <p>Optimized Route Planner for Emergency Vehicles</p>
+    <p>AI-Inspired Smart Emergency Route Simulation</p>
+</header>
+
+<main class="container">
+
+    <section class="intro">
+        <h2>Welcome to ResQ Route</h2>
+        <p>
+            A smart emergency vehicle route planning simulation
+            using Dijkstra's Algorithm, A* Search, AVL Tree,
+            Priority Queue and traffic management.
+        </p>
+        <p><strong>Risk → Exposure → Action</strong></p>
+    </section>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <h3 id="hospitalCount">0</h3>
+            <p>Total Hospitals</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="roadCount">0</h3>
+            <p>Available Roads</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="treeRecords">0</h3>
+            <p>AVL Records</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="treeHeight">0</h3>
+            <p>AVL Tree Height</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="treeRotations">0</h3>
+            <p>AVL Rotations</p>
+        </div>
+
+    </section>
+
+    <section class="panel">
+        <h2>📍 Route Planning Controls</h2>
+
+        <div class="controls">
+
+            <div>
+                <label for="startSelect">Ambulance Starting Location</label>
+                <select id="startSelect"></select>
+            </div>
+
+            <div>
+                <label for="patientSelect">Patient Location</label>
+                <select id="patientSelect"></select>
+            </div>
+
+            <div>
+                <label for="algorithmSelect">Route Algorithm</label>
+                <select id="algorithmSelect">
+                    <option value="Dijkstra">Dijkstra Algorithm</option>
+                    <option value="A*">A* Algorithm</option>
+                </select>
+            </div>
+
+        </div>
+
+        <br>
+
+        <button id="findRouteBtn">🔍 Find Optimized Routes</button>
+        <button id="animateBtn" class="success">🚑 Animate Ambulance</button>
+        <button id="trafficBtn" class="secondary">🚦 Simulate Traffic</button>
+        <button id="blockModeBtn" class="danger">🚧 Block a Road</button>
+        <button id="clearBtn" class="secondary">↻ Reset Conditions</button>
+
+        <div class="status" id="mapStatus">
+            Waiting for route calculation...
+        </div>
+
+        <div class="status" id="routeMessage">
+            Select locations and calculate a route.
+        </div>
+
+        <div class="status" id="ambulanceStatus">
+            Ambulance is waiting.
+        </div>
+
+        <div class="status" id="trafficStatus">
+            Traffic is normal.
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>🗺️ Emergency Road Network</h2>
+        <p style="margin-bottom:12px;color:#64748b;">
+            Blue nodes represent locations. Green nodes represent hospitals.
+            Orange outlines indicate the calculated route.
+        </p>
+
+        <div id="cityGrid" class="map"></div>
+    </section>
+
+    <section class="panel">
+        <h2>📊 Optimized Route Results</h2>
+
+        <div class="result-grid">
+
+            <div class="result-card">
+                <h3>Recommended Hospital</h3>
+                <p id="recommendedHospital">Not calculated yet</p>
+                <p id="hospitalDetails">Hospital information will appear here.</p>
+            </div>
+
+            <div class="result-card">
+                <h3>Total Route Cost</h3>
+                <p id="totalCost">--</p>
+            </div>
+
+            <div class="result-card">
+                <h3>Route Distance</h3>
+                <p id="distance">--</p>
+            </div>
+
+            <div class="result-card">
+                <h3>Nodes Explored</h3>
+                <p id="nodesExplored">0</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>⚡ Algorithm Performance Comparison</h2>
+
+        <div class="comparison">
+
+            <div class="result-card">
+                <h3>Dijkstra Algorithm</h3>
+                <p>Nodes Explored: <strong id="dijkstraNodes">--</strong></p>
+                <p>Route Cost: <strong id="dijkstraCost">--</strong></p>
+            </div>
+
+            <div class="result-card">
+                <h3>A* Algorithm</h3>
+                <p>Nodes Explored: <strong id="astarNodes">--</strong></p>
+                <p>Route Cost: <strong id="astarCost">--</strong></p>
+            </div>
+
+        </div>
+
+        <div class="status" id="comparisonSummary">
+            Algorithm comparison will appear here.
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>🏥 Hospital Search Using AVL Tree</h2>
+
+        <label for="avlSpecialty">Select Hospital Specialty</label>
+
+        <select id="avlSpecialty">
+        </select>
+
+        <br><br>
+
+        <button id="searchHospitalBtn">Search Hospitals</button>
+
+        <div class="status" id="avlStatus">
+            Search hospitals by specialty.
+        </div>
+
+        <div id="hospitalList"></div>
+    </section>
+
+</main>
+
+<footer>
+    <p><strong>ResQ Route | Team TechVanguard</strong></p>
+    <p>Optimized Route Planner for Emergency Vehicles</p>
+    <p>Academic Project Demonstration</p>
+</footer>
+
+</body>
+</html>
